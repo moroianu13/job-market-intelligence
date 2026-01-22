@@ -16,8 +16,13 @@ __pycache__/
 
 # data (raw + derived)
 data/raw/adzuna/
-data/curated/*.parquet
 data/curated/snapshots/
+*.parquet
+
+# keep mock data for tests
+!data/raw/mock/
+!data/raw/mock/**
+
 
 # models (trained artifacts)
 models/
