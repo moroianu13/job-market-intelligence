@@ -163,7 +163,7 @@ def main():
                 df_filtered['roles'].apply(lambda x: len(x) > 1).sum()
             ]
         })
-        st.dataframe(summary_df, use_container_width=True, hide_index=True)
+        st.dataframe(summary_df, width='stretch', hide_index=True)
     
     with tab2:
         st.markdown('<p class="sub-header">Roles & Skills Analysis</p>', unsafe_allow_html=True)
@@ -178,7 +178,7 @@ def main():
             st.bar_chart(role_df.set_index('Role'))
             
             # Show table
-            st.dataframe(role_df, use_container_width=True, hide_index=True)
+            st.dataframe(role_df, width='stretch', hide_index=True)
         
         with col2:
             st.markdown("#### Top Skills")
@@ -191,7 +191,7 @@ def main():
                 st.bar_chart(skill_df.set_index('Skill'))
                 
                 with st.expander("View all skills"):
-                    st.dataframe(skill_df, use_container_width=True, hide_index=True)
+                    st.dataframe(skill_df, width='stretch', hide_index=True)
             else:
                 st.info("No skills data available for filtered jobs")
     
@@ -214,7 +214,13 @@ def main():
             
             # Distribution
             st.markdown("#### Salary Distribution")
-            st.histogram_chart(df_salary['salary_mid'], bins=30)
+            fig, ax = plt.subplots(figsize=(10, 4))
+            ax.hist(df_salary['salary_mid'], bins=30, color='#3b82f6', edgecolor='white')
+            ax.set_xlabel('Salary (€)')
+            ax.set_ylabel('Number of Jobs')
+            ax.set_title('Salary Distribution')
+            ax.grid(axis='y', alpha=0.3)
+            st.pyplot(fig)
             
             # By country
             st.markdown("#### Average Salary by Country")
@@ -226,7 +232,7 @@ def main():
             st.bar_chart(salary_by_country.set_index('country')['mean'])
             st.dataframe(
                 salary_by_country.rename(columns={'country': 'Country', 'mean': 'Avg Salary', 'count': 'Jobs'}),
-                use_container_width=True,
+                width='stretch',
                 hide_index=True
             )
         else:
@@ -339,7 +345,7 @@ def main():
     
     st.dataframe(
         display_df.head(100),
-        use_container_width=True,
+        width='stretch',
         hide_index=True,
         height=400
     )
