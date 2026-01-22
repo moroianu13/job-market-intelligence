@@ -20,13 +20,19 @@ A professional data pipeline for collecting, processing, and analyzing job marke
 - **Interactive UI**: Streamlit dashboard with filters, charts, and ML comparison
 - **Docker Ready**: Full containerization with docker-compose
 - **Multi-Country**: DE, PL, GB, AT, NL, BE, FR, ES, IT
-- **Production Code**: Typed, tested (26/26 passing), logged, documented
+- **Production Code**: Typed, tested (53/53 passing), logged, documented
+- **CI/CD**: Automated testing, building, deployment via GitHub Actions
+- **Cloud Ready**: Kubernetes, Terraform (AWS), Docker Compose configurations
+- **Monitoring**: Prometheus + Grafana dashboards, health checks, alerting
 
 ## 🚀 Quick Start
 
+### Local Development
+
 ```bash
 # Install
-git clone <repo-url> && cd job-market-intelligence
+git clone https://github.com/moroianu13/job-market-intelligence.git
+cd job-market-intelligence
 python -m venv venv && source venv/bin/activate
 pip install -r requirements.txt
 
@@ -34,15 +40,27 @@ pip install -r requirements.txt
 echo "ADZUNA_APP_ID=your_id" > .env
 echo "ADZUNA_APP_KEY=your_key" >> .env
 
-# Run pipeline (one command!)
-python orchestration/run_pipeline.py --all
-
-# Run with ghost job detection
+# Run pipeline
 python orchestration/run_pipeline.py --all --ml --ghost-detection
 
 # Launch dashboard
 streamlit run app/streamlit_app.py
 ```
+
+### Production Deployment
+
+```bash
+# Docker Compose (single server)
+./deployment/deploy.sh production
+
+# Kubernetes (scalable)
+kubectl apply -f deployment/kubernetes.yml
+
+# AWS (Terraform)
+cd deployment/terraform && terraform apply
+```
+
+See **[DEPLOYMENT.md](DEPLOYMENT.md)** for comprehensive deployment guide.
 
 Or use **Makefile**:
 ```bash
