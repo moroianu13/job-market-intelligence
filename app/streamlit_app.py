@@ -122,7 +122,7 @@ def main():
         st.metric("Total Jobs", f"{len(df_filtered):,}")
     
     with col2:
-        st.metric("Countries", len(df_filtered['country'].nunique()))
+        st.metric("Countries", df_filtered['country'].nunique())
     
     with col3:
         salary_coverage = 100 * df_filtered['salary_min'].notna().sum() / len(df_filtered)
