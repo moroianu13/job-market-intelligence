@@ -14,7 +14,7 @@ from pathlib import Path
 from typing import List, Optional
 
 from config import (
-    PROJECT_ROOT, CURATED_DATA_DIR, MODELS_DIR, REPORTS_DIR,
+    PROJECT_ROOT, CURATED_DATA_DIR, SNAPSHOTS_DIR, MODELS_DIR, REPORTS_DIR,
     DEFAULT_COUNTRIES, DEFAULT_QUERIES, DEFAULT_PAGES_PER_QUERY,
     LOG_FORMAT, LOG_LEVEL, ensure_directories, validate_api_credentials
 )
@@ -131,7 +131,49 @@ class PipelineRunner:
             except FileNotFoundError:
                 logger.warning("No trained ML model found, will use default")
         
-        return self.run_command(cmd, "label")
+        success = self.run_command(cmd, "label")
+        
+        # Save snapshot after successful labeling
+        if success and output_path.exists():
+            self._save_snapshot(output_path)
+        
+        return success
+    
+    def _save_snapshot(self, curated_path: Path):
+        """Save dated snapshot of curated data for historical tracking.
+        
+        Args:
+            curated_path: Path to the current curated data file
+        """
+        import shutil
+        
+        # Create snapshot directory for this run_date
+        snapshot_dir = SNAPSHOTS_DIR / self.run_date
+        snapshot_dir.mkdir(parents=True, exist_ok=True)
+        
+        snapshot_path = snapshot_dir / curated_path.name
+        
+        try:
+            shutil.copy2(curated_path, snapshot_path)
+            logger.info(f"📸 Snapshot saved: {snapshot_path}")
+        except Exception as e:
+            logger.warning(f"⚠️  Failed to save snapshot: {e}")
+    
+    def step_ghost_detection(self) -> bool:
+        """Detect ghost jobs from historical snapshots."""
+        # Check if we have snapshots
+        if not SNAPSHOTS_DIR.exists() or not list(SNAPSHOTS_DIR.glob("*/*.parquet")):
+            logger.warning("⚠️  No snapshots found, skipping ghost detection")
+            logger.warning(f"   Snapshots directory: {SNAPSHOTS_DIR}")
+            self.skipped_steps.append("ghost-detection")
+            return True
+        
+        cmd = [
+            sys.executable, 'analysis/repost_detector.py',
+            '--run-date', self.run_date
+        ]
+        
+        return self.run_command(cmd, "ghost-detection")
     
     def step_eda(self) -> bool:
         """Generate EDA report with visualizations."""
@@ -223,6 +265,8 @@ class PipelineRunner:
         
         if self.args.all:
             steps = ['fetch', 'label', 'eda', 'insights', 'salary', 'train_role_model']
+            if self.args.ghost_detection:
+                steps.append('ghost_detection')
         else:
             if self.args.fetch:
                 steps.append('fetch')
@@ -236,6 +280,8 @@ class PipelineRunner:
                 steps.append('salary')
             if self.args.train_role_model:
                 steps.append('train_role_model')
+            if self.args.ghost_detection:
+                steps.append('ghost_detection')
         
         if not steps:
             logger.error("❌ No steps specified! Use --all or specific step flags.")
@@ -325,6 +371,9 @@ Examples:
   # Run full pipeline
   python orchestration/run_pipeline.py --all
   
+  # Run with ghost job detection
+  python orchestration/run_pipeline.py --all --ghost-detection
+  
   # Run specific steps
   python orchestration/run_pipeline.py --fetch --label --eda
   
@@ -347,6 +396,7 @@ Examples:
     parser.add_argument('--insights', action='store_true', help='Generate market insights')
     parser.add_argument('--salary', action='store_true', help='Train salary prediction model')
     parser.add_argument('--train-role-model', action='store_true', help='Train ML role classifier')
+    parser.add_argument('--ghost-detection', action='store_true', help='Detect ghost jobs from historical snapshots')
     
     # Configuration
     parser.add_argument('--ml', action='store_true', help='Use ML classifier for role labeling')

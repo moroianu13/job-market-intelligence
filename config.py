@@ -14,9 +14,11 @@ PROJECT_ROOT = Path(__file__).parent
 DATA_ROOT = PROJECT_ROOT / "data"
 RAW_DATA_DIR = DATA_ROOT / "raw" / "adzuna"
 CURATED_DATA_DIR = DATA_ROOT / "curated"
+SNAPSHOTS_DIR = CURATED_DATA_DIR / "snapshots"
 MOCK_DATA_DIR = DATA_ROOT / "raw" / "mock"
 MODELS_DIR = PROJECT_ROOT / "models"
 REPORTS_DIR = PROJECT_ROOT / "reports"
+GHOST_JOBS_DIR = REPORTS_DIR / "ghost_jobs"
 
 # API Credentials
 ADZUNA_APP_ID = os.getenv("ADZUNA_APP_ID", "")

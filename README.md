@@ -11,6 +11,8 @@ A professional data pipeline for collecting, processing, and analyzing job marke
 ## ✨ Features
 
 - **One-Command Pipeline**: Full orchestration with `--all` flag or granular step control
+- **Historical Data Tracking**: Dated snapshots for trend analysis and repost detection
+- **Ghost Job Detection**: Identify suspicious job postings that stay active for extended periods
 - **Dual Classification**: Rule-based (keyword matching) + ML-based (91.6% F1 score)
 - **Automated EDA**: Generate comprehensive reports with visualizations
 - **Salary Modeling**: Ridge regression for salary prediction (R²: 0.70)
@@ -34,6 +36,9 @@ echo "ADZUNA_APP_KEY=your_key" >> .env
 
 # Run pipeline (one command!)
 python orchestration/run_pipeline.py --all
+
+# Run with ghost job detection
+python orchestration/run_pipeline.py --all --ml --ghost-detection
 
 # Launch dashboard
 streamlit run app/streamlit_app.py
@@ -82,9 +87,12 @@ job-market-intelligence/
 ├── processing/             # Data transformation layer
 │   ├── normalize_all_adzuna.py  # JSON to DataFrame normalization
 │   ├── label_all_jobs.py        # Apply role labels to jobs (rules or ML)
-│   └── skill_extraction.py      # Extract technical skills
+│   ├── skill_extraction.py      # Extract technical skills
+│   └── fingerprints.py          # Job fingerprinting for repost detection
 ├── analysis/              # Analytical models
-│   └── salary_model.py   # Salary prediction model
+│   ├── eda_report.py     # Exploratory data analysis
+│   ├── salary_model.py   # Salary prediction model
+│   └── repost_detector.py # Ghost job detection
 ├── ml/                   # Machine learning models
 │   └── role_classifier/  # ML-based role classification
 │       ├── train_classifier.py   # Train multi-label classifier
@@ -96,6 +104,9 @@ job-market-intelligence/
 │   │   ├── adzuna/       # Production data by date/country/query
 │   │   └── mock/         # Sample data for testing
 │   └── curated/          # Processed Parquet files (gitignored)
+│       ├── jobs_all_labeled.parquet      # Latest rule-based
+│       ├── jobs_all_labeled_ml.parquet   # Latest ML-based
+│       └── snapshots/                     # Historical snapshots by date
 ├── models/               # Trained models (gitignored)
 │   ├── role_classifier/  # Role classification models
 │   └── salary/           # Salary prediction models
@@ -271,7 +282,112 @@ ROLE_KEYWORDS = {
 | `query` | str | Search query used to find this job |
 | `roles` | list[str] | Classified role labels (multi-label) |
 | `skills` | list[str] | Extracted technical skills |
+| `job_fingerprint` | str | SHA1 hash for tracking reposts across runs |
 | `source_file` | str | Original JSON file path |
+
+## 📸 Historical Data & Ghost Job Detection
+
+### Historical Data Retention
+
+The system maintains **versioned snapshots** of all curated data for trend analysis:
+
+```
+data/curated/
+├── jobs_all_labeled_ml.parquet        # Latest version (for UI)
+└── snapshots/
+    ├── 2026-01-15/
+    │   └── jobs_all_labeled_ml.parquet
+    ├── 2026-01-22/
+    │   └── jobs_all_labeled_ml.parquet
+    └── 2026-01-29/
+        └── jobs_all_labeled_ml.parquet
+```
+
+**Key Benefits:**
+- Track how job postings change over time
+- Detect reposted jobs (same job, different posting dates)
+- Identify ghost jobs that stay active for months
+- Analyze market trends and seasonal patterns
+- Historical backfilling for retrospective analysis
+
+### How Ghost Jobs Are Detected
+
+**Ghost jobs** are suspicious postings that remain active far longer than normal hiring cycles. These may indicate:
+- Companies perpetually "hiring" to collect resumes
+- Fake postings to gauge market interest
+- Outdated listings never removed
+
+**Detection Strategy:**
+
+1. **Job Fingerprinting**: Each job gets a stable identifier based on:
+   - Normalized title (case/whitespace insensitive)
+   - Normalized company name
+   - Normalized location
+   - URL domain (not full URL, to survive tracking params)
+
+2. **Historical Tracking**: Load all snapshots and group by fingerprint to compute:
+   - `first_seen`: First date job appeared
+   - `last_seen`: Most recent appearance
+   - `days_seen`: Number of distinct scraping dates
+   - `repost_count`: Total times job was observed
+   - `active_span_days`: Days between first and last observation
+
+3. **Ghost Job Heuristic** (configurable):
+   ```python
+   ghost_job = (days_seen >= 3) AND (active_span_days >= 30)
+   ```
+   
+   **Rationale**: Real jobs typically fill within 2-4 weeks. Jobs appearing on 3+ separate scraping runs spanning 30+ days are suspicious.
+
+### Running Ghost Detection
+
+```bash
+# Detect ghost jobs from all historical snapshots
+python analysis/repost_detector.py
+
+# With custom thresholds
+python analysis/repost_detector.py --min-days-seen 5 --min-active-span 45
+
+# Integrated in pipeline
+python orchestration/run_pipeline.py --all --ghost-detection
+```
+
+**Output:**
+- `reports/ghost_jobs/<date>/ghost_jobs.csv` - Full list of flagged jobs
+- `reports/ghost_jobs/<date>/summary.json` - Statistics and top offenders
+
+**Example Summary:**
+```json
+{
+  "analysis_date": "2026-01-22",
+  "total_unique_jobs": 1247,
+  "ghost_jobs_count": 89,
+  "ghost_jobs_pct": 7.14,
+  "metrics": {
+    "avg_active_span_days": 68,
+    "max_active_span_days": 120,
+    "max_repost_count": 12
+  }
+}
+```
+
+### Fingerprint Stability
+
+The fingerprinting algorithm is designed to be:
+- **Deterministic**: Same job → same fingerprint
+- **Robust**: Minor text changes don't break tracking
+- **Sensitive**: Different jobs → different fingerprints
+
+Example:
+```python
+from processing.fingerprints import make_fingerprint
+
+job1 = {"title": "Data Scientist", "company": "Tech Corp", "location": "Berlin", "redirect_url": "https://example.com/job1"}
+job2 = {"title": "DATA SCIENTIST", "company": "tech corp", "location": "  Berlin  ", "redirect_url": "https://example.com/job1?ref=linkedin"}
+
+# Same fingerprint despite case/whitespace/URL param differences
+make_fingerprint(job1) == make_fingerprint(job2)  # True
+```
 
 ## 🤖 ML Role Classifier
 

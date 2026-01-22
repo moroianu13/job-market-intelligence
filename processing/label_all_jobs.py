@@ -12,6 +12,7 @@ import pandas as pd
 from preprocessing.role_labels import assign_roles
 from processing.normalize_all_adzuna import load_all_raw
 from processing.skill_extraction import extract_skills
+from processing.fingerprints import add_fingerprints
 
 
 # Configure logging
@@ -56,6 +57,10 @@ def label_jobs(df: pd.DataFrame, use_ml: bool = False, model_dir: Path = None) -
     logger.info("Extracting skills...")
     df["skills"] = df.apply(lambda r: extract_skills(r["title"], r["description"]), axis=1)
     logger.info("Skill extraction completed")
+    
+    logger.info("Adding job fingerprints...")
+    df = add_fingerprints(df)
+    logger.info("Fingerprinting completed")
     
     return df
 

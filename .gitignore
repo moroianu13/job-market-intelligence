@@ -16,7 +16,8 @@ __pycache__/
 
 # data (raw + derived)
 data/raw/adzuna/
-data/curated/
+data/curated/*.parquet
+data/curated/snapshots/
 
 # models (trained artifacts)
 models/
