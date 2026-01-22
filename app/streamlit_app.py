@@ -11,6 +11,7 @@ from pathlib import Path
 
 import pandas as pd
 import streamlit as st
+import matplotlib.pyplot as plt
 
 # Page config
 st.set_page_config(
