@@ -49,18 +49,28 @@ streamlit run app/streamlit_app.py
 
 ### Production Deployment
 
+**Free Options (No Credit Card Required):**
+
 ```bash
-# Docker Compose (single server)
-./deployment/deploy.sh production
+# Option 1: Streamlit Cloud (Recommended - 100% FREE)
+# 1. Go to https://share.streamlit.io
+# 2. Connect your GitHub repo
+# 3. Deploy! (5 minutes, zero cost)
 
-# Kubernetes (scalable)
-kubectl apply -f deployment/kubernetes.yml
+# Option 2: Railway.app ($5 credit/month, no CC for hobby)
+railway login
+railway init
+railway up
 
-# AWS (Terraform)
-cd deployment/terraform && terraform apply
+# Option 3: Render.com (Free tier)
+# 1. Connect GitHub at render.com
+# 2. Create Web Service
+# 3. Deploy!
 ```
 
-See **[DEPLOYMENT.md](DEPLOYMENT.md)** for comprehensive deployment guide.
+See **[FREE_DEPLOYMENT.md](FREE_DEPLOYMENT.md)** for 100% free deployment options.
+
+For enterprise deployment, see **[DEPLOYMENT.md](DEPLOYMENT.md)**.
 
 Or use **Makefile**:
 ```bash

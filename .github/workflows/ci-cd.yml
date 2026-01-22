@@ -46,7 +46,10 @@ jobs:
     name: Build Docker Image
     runs-on: ubuntu-latest
     needs: test
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && github.repository_owner == 'your-username'
+    # NOTE: Disabled by default to avoid consuming GitHub Actions minutes
+    # Enable by replacing 'your-username' with your actual GitHub username
+    # Or remove this job if you're using free hosting (Streamlit Cloud, Railway, Render)
     
     steps:
     - name: Checkout code
@@ -56,6 +59,7 @@ jobs:
       uses: docker/setup-buildx-action@v3
       
     - name: Log in to Docker Hub
+      if: github.event.repository.private == false
       uses: docker/login-action@v3
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
@@ -85,7 +89,9 @@ jobs:
     name: Deploy to Staging
     runs-on: ubuntu-latest
     needs: build
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main' && github.repository_owner == 'your-username'
+    # NOTE: Disabled by default - only enable if you have a staging environment
+    # For free hosting, this step is not needed
     environment: staging
     
     steps:
@@ -96,6 +102,7 @@ jobs:
       run: |
         echo "🚀 Deploying to staging environment..."
         # Add your deployment commands here (e.g., kubectl, docker-compose, terraform)
+        # Not needed for Streamlit Cloud / Railway / Render (they auto-deploy)
         
   security-scan:
     name: Security Scanning

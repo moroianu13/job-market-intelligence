@@ -1,0 +1,31 @@
+# Railway.app Configuration
+# Free $5/month credit - perfect for this project!
+
+[build]
+builder = "NIXPACKS"
+
+[deploy]
+numReplicas = 1
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 10
+
+[[services]]
+name = "streamlit-ui"
+command = "streamlit run app/streamlit_app.py --server.port $PORT --server.address 0.0.0.0"
+
+[services.healthcheck]
+path = "/_stcore/health"
+timeout = 100
+interval = 30
+
+[[services.ports]]
+containerPort = 8501
+protocol = "TCP"
+
+[[services.env]]
+name = "PYTHONUNBUFFERED"
+value = "1"
+
+[[services.env]]
+name = "STREAMLIT_SERVER_HEADLESS"
+value = "true"

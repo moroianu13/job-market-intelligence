@@ -1,0 +1,2 @@
+# Python runtime for Streamlit Cloud
+3.10

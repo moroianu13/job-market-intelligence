@@ -1,10 +1,12 @@
 name: Scheduled Data Pipeline
 
 on:
-  schedule:
-    # Run every Monday at 2 AM UTC
-    - cron: '0 2 * * 1'
-  workflow_dispatch:  # Allow manual triggering
+  # schedule:
+  #   # Run every Monday at 2 AM UTC
+  #   - cron: '0 2 * * 1'
+  # NOTE: Scheduled runs are DISABLED by default to save GitHub Actions minutes
+  # Uncomment the schedule above to enable weekly runs (uses ~30 min/week)
+  workflow_dispatch:  # Allow manual triggering only
 
 jobs:
   run-pipeline:

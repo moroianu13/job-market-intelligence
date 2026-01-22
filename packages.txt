@@ -1,0 +1,7 @@
+# Packages required for Streamlit Cloud deployment
+# Only system-level dependencies (use requirements.txt for Python packages)
+
+# None needed for this project
+# Uncomment if you add features that need system packages:
+# build-essential
+# libpq-dev
