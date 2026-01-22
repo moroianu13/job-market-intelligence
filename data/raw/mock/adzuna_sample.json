@@ -1,0 +1,173 @@
+{
+  "count": 8,
+  "results": [
+    {
+      "id": "4123456789",
+      "title": "Senior Data Scientist",
+      "description": "We're looking for an experienced Data Scientist to join our team. You'll work on developing machine learning models, conducting statistical analysis, and extracting insights from large datasets. Must have experience with Python, R, and statistical modeling. Ideal candidate will have a PhD in a quantitative field.",
+      "created": "2026-01-20T10:30:00Z",
+      "location": {
+        "area": ["UK", "London", "Central London"],
+        "display_name": "London"
+      },
+      "category": {
+        "label": "IT Jobs",
+        "tag": "it-jobs"
+      },
+      "company": {
+        "display_name": "Tech Innovations Ltd"
+      },
+      "salary_min": 65000,
+      "salary_max": 90000,
+      "contract_time": "full_time",
+      "redirect_url": "https://www.adzuna.co.uk/jobs/land/ad/4123456789"
+    },
+    {
+      "id": "4123456790",
+      "title": "Data Engineer",
+      "description": "Join our data platform team as a Data Engineer. You'll be responsible for building and maintaining ETL pipelines, optimizing data warehouse performance, and working with big data technologies. Experience with Spark, Airflow, and SQL is required. Cloud experience (AWS/GCP/Azure) is a plus.",
+      "created": "2026-01-19T14:20:00Z",
+      "location": {
+        "area": ["UK", "England", "Manchester"],
+        "display_name": "Manchester"
+      },
+      "category": {
+        "label": "IT Jobs",
+        "tag": "it-jobs"
+      },
+      "company": {
+        "display_name": "DataFlow Systems"
+      },
+      "salary_min": 55000,
+      "salary_max": 75000,
+      "contract_time": "full_time",
+      "redirect_url": "https://www.adzuna.co.uk/jobs/land/ad/4123456790"
+    },
+    {
+      "id": "4123456791",
+      "title": "Machine Learning Engineer",
+      "description": "Exciting opportunity for an ML Engineer to work on cutting-edge AI products. You'll design, develop, and deploy machine learning models at scale. Strong programming skills in Python required, along with experience in deep learning frameworks (TensorFlow/PyTorch). MLOps experience highly valued.",
+      "created": "2026-01-18T09:15:00Z",
+      "location": {
+        "area": ["UK", "Scotland", "Edinburgh"],
+        "display_name": "Edinburgh"
+      },
+      "category": {
+        "label": "IT Jobs",
+        "tag": "it-jobs"
+      },
+      "company": {
+        "display_name": "AI Solutions Inc"
+      },
+      "salary_min": 70000,
+      "salary_max": 95000,
+      "contract_time": "full_time",
+      "redirect_url": "https://www.adzuna.co.uk/jobs/land/ad/4123456791"
+    },
+    {
+      "id": "4123456792",
+      "title": "Data Analyst",
+      "description": "We need a Data Analyst to support business decision-making through data analysis and reporting. You'll create dashboards, perform ad-hoc analysis, and work closely with stakeholders. Strong SQL skills and experience with BI tools (Tableau, Power BI) required. Business analyst experience is a plus.",
+      "created": "2026-01-21T11:45:00Z",
+      "location": {
+        "area": ["UK", "England", "Birmingham"],
+        "display_name": "Birmingham"
+      },
+      "category": {
+        "label": "IT Jobs",
+        "tag": "it-jobs"
+      },
+      "company": {
+        "display_name": "Retail Analytics Group"
+      },
+      "salary_min": 35000,
+      "salary_max": 50000,
+      "contract_time": "full_time",
+      "redirect_url": "https://www.adzuna.co.uk/jobs/land/ad/4123456792"
+    },
+    {
+      "id": "4123456793",
+      "title": "Cybersecurity Specialist",
+      "description": "Join our security team as a Cybersecurity Specialist. You'll be responsible for protecting our infrastructure from threats, conducting security audits, and implementing security best practices. Experience with infosec tools, penetration testing, and security frameworks (ISO 27001, NIST) required.",
+      "created": "2026-01-20T16:30:00Z",
+      "location": {
+        "area": ["UK", "England", "London"],
+        "display_name": "London"
+      },
+      "category": {
+        "label": "IT Jobs",
+        "tag": "it-jobs"
+      },
+      "company": {
+        "display_name": "SecureNet Ltd"
+      },
+      "salary_min": 60000,
+      "salary_max": 85000,
+      "contract_time": "full_time",
+      "redirect_url": "https://www.adzuna.co.uk/jobs/land/ad/4123456793"
+    },
+    {
+      "id": "4123456794",
+      "title": "DevOps Engineer",
+      "description": "We're seeking a DevOps Engineer to join our platform team. You'll automate infrastructure, manage CI/CD pipelines, and ensure system reliability. Strong experience with Kubernetes, Docker, Terraform, and cloud platforms required. SRE mindset and experience with monitoring tools (Prometheus, Grafana) highly valued.",
+      "created": "2026-01-19T13:00:00Z",
+      "location": {
+        "area": ["UK", "England", "Bristol"],
+        "display_name": "Bristol"
+      },
+      "category": {
+        "label": "IT Jobs",
+        "tag": "it-jobs"
+      },
+      "company": {
+        "display_name": "CloudOps Technologies"
+      },
+      "salary_min": 58000,
+      "salary_max": 80000,
+      "contract_time": "full_time",
+      "redirect_url": "https://www.adzuna.co.uk/jobs/land/ad/4123456794"
+    },
+    {
+      "id": "4123456795",
+      "title": "Software Engineer - Full Stack",
+      "description": "Looking for a talented Software Engineer to join our product team. You'll work on both frontend and backend development, building scalable web applications. Strong experience with JavaScript/TypeScript, React, Node.js, and modern software development practices required. Fullstack developers with cloud experience preferred.",
+      "created": "2026-01-21T08:45:00Z",
+      "location": {
+        "area": ["UK", "England", "Cambridge"],
+        "display_name": "Cambridge"
+      },
+      "category": {
+        "label": "IT Jobs",
+        "tag": "it-jobs"
+      },
+      "company": {
+        "display_name": "Innovate Software"
+      },
+      "salary_min": 50000,
+      "salary_max": 70000,
+      "contract_time": "full_time",
+      "redirect_url": "https://www.adzuna.co.uk/jobs/land/ad/4123456795"
+    },
+    {
+      "id": "4123456796",
+      "title": "Technical Project Manager",
+      "description": "Seeking a Technical Project Manager to coordinate our development initiatives. You'll manage project timelines, facilitate communication between teams, and ensure delivery of high-quality solutions. No specific technical role keywords match, but strong organizational and technical background required.",
+      "created": "2026-01-20T15:20:00Z",
+      "location": {
+        "area": ["UK", "England", "Leeds"],
+        "display_name": "Leeds"
+      },
+      "category": {
+        "label": "IT Jobs",
+        "tag": "it-jobs"
+      },
+      "company": {
+        "display_name": "Project Solutions Ltd"
+      },
+      "salary_min": 55000,
+      "salary_max": 70000,
+      "contract_time": "full_time",
+      "redirect_url": "https://www.adzuna.co.uk/jobs/land/ad/4123456796"
+    }
+  ]
+}

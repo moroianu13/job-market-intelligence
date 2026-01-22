@@ -1,0 +1,50 @@
+# virtual environment
+venv/
+env/
+.venv/
+
+# secrets
+.env
+*.env
+
+# python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# data (raw + derived)
+data/raw/adzuna/
+data/curated/
+
+# models (trained artifacts)
+models/
+
+# reports (generated outputs)
+reports/
+
+# editor stuff
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# testing
+.pytest_cache/
+.coverage
+htmlcov/
+*.cover
+
+# logs
+logs/*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# build artifacts
+build/
+dist/
+*.egg-info/

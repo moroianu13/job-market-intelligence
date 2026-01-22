@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  # Main pipeline service
+  pipeline:
+    build: .
+    container_name: job-intelligence-pipeline
+    volumes:
+      - ./data:/app/data
+      - ./models:/app/models
+      - ./reports:/app/reports
+      - ./.env:/app/.env
+    environment:
+      - PYTHONUNBUFFERED=1
+    command: python orchestration/run_pipeline.py --all
+
+  # Streamlit UI service
+  streamlit:
+    build: .
+    container_name: job-intelligence-ui
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./data:/app/data
+      - ./models:/app/models
+      - ./reports:/app/reports
+    environment:
+      - PYTHONUNBUFFERED=1
+    command: streamlit run app/streamlit_app.py --server.address 0.0.0.0
