@@ -238,7 +238,7 @@ def render_overview(df: pd.DataFrame) -> None:
         )
         fig.update_xaxes(showgrid=False)
         fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor='rgba(0,0,0,0.05)')
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, use_container_width=True, key='overview_country_dist')
         st.caption("Top 15 countries by job count")
     
     with col2:
@@ -261,7 +261,7 @@ def render_overview(df: pd.DataFrame) -> None:
             )
             fig.update_xaxes(showgrid=False)
             fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor='rgba(0,0,0,0.05)')
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, use_container_width=True, key='overview_timeline')
             st.caption("Jobs indexed over time")
         else:
             st.info("Timeline data not available in this dataset")
@@ -330,7 +330,7 @@ def render_roles_skills(df: pd.DataFrame) -> None:
                 yaxis_title=''
             )
             fig.update_xaxes(showgrid=True, gridwidth=1, gridcolor='rgba(0,0,0,0.05)')
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, use_container_width=True, key='roles_distribution')
             st.caption(f"Top 12 roles (out of {len(role_counts)} total)")
         else:
             st.info("No role data available")
@@ -365,7 +365,7 @@ def render_roles_skills(df: pd.DataFrame) -> None:
                 yaxis_title=''
             )
             fig.update_xaxes(showgrid=True, gridwidth=1, gridcolor='rgba(0,0,0,0.05)')
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, use_container_width=True, key='skills_distribution')
             st.caption(f"Top {top_n} in-demand skills")
         else:
             st.info("No skills data available for filtered jobs")
@@ -442,7 +442,7 @@ def render_salaries(df: pd.DataFrame) -> None:
         )
         fig.update_xaxes(showgrid=False)
         fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor='rgba(0,0,0,0.05)')
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, use_container_width=True, key='salary_histogram')
         st.caption(f"Distribution of {len(df_salary):,} jobs with validated salary data")
         
         # By Country
@@ -479,12 +479,10 @@ def render_salaries(df: pd.DataFrame) -> None:
                 yaxis_title=''
             )
             fig.update_xaxes(showgrid=True, gridwidth=1, gridcolor='rgba(0,0,0,0.05)')
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, use_container_width=True, key='salary_by_country')
             st.caption(f"Based on {len(salary_by_country)} countries with {min_samples}+ validated records")
         else:
             st.info(f"No countries have {min_samples}+ validated salary records")
-        st.plotly_chart(fig, use_container_width=True)
-        st.caption(f"Based on {len(salary_by_country)} countries with 3+ data points")
         
     else:
         st.info("No salary data available for filtered jobs. This may be normal for rule-based labeling.")
