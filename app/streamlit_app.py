@@ -35,6 +35,15 @@ COLOR_SUCCESS = "#10A37F"      # Professional green
 COLOR_WARNING = "#D97706"      # Professional amber
 COLOR_NEUTRAL = "#6B7280"      # Professional gray
 
+# Resource guards
+ALLOWED_COLUMNS = [
+    'job_id', 'title', 'description', 'created', 'redirect_url', 'company', 'category',
+    'location', 'salary_min', 'salary_max', 'run_date', 'country', 'query',
+    'roles', 'skills', 'salary_flag', 'salary_note', 'job_fingerprint'
+]
+MAX_ROWS = 50000
+CACHE_TTL_SECONDS = 600
+
 # Custom CSS for professional styling
 st.markdown(f"""
 <style>
@@ -137,7 +146,7 @@ st.markdown(f"""
 # DATA LOADING
 # ============================================================================
 
-@st.cache_data
+@st.cache_data(ttl=CACHE_TTL_SECONDS, show_spinner=False)
 def load_data(file_path: str) -> pd.DataFrame:
     """
     Load and cache job market data from parquet file.
@@ -150,6 +159,19 @@ def load_data(file_path: str) -> pd.DataFrame:
     """
     try:
         df = pd.read_parquet(file_path)
+        # Restrict to allowed columns to avoid loading unexpected data
+        allowed = [c for c in df.columns if c in ALLOWED_COLUMNS]
+        df = df[allowed]
+        for col in ('roles', 'skills'):
+            if col not in df.columns:
+                df[col] = []
+        # Cap rows to prevent resource exhaustion on large files
+        if len(df) > MAX_ROWS:
+            df = df.head(MAX_ROWS)
+            st.warning(
+                f"Dataset truncated to first {MAX_ROWS:,} rows to protect app resources.",
+                icon="⚠️"
+            )
         # Handle numpy arrays in roles/skills columns
         df['roles'] = df['roles'].apply(lambda x: list(x) if hasattr(x, '__iter__') else [])
         df['skills'] = df['skills'].apply(lambda x: list(x) if hasattr(x, '__iter__') else [])

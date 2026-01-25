@@ -19,7 +19,21 @@ from dotenv import load_dotenv
 
 load_dotenv()  # loads .env from project root
 
-# Configure logging
+
+class EnvVarMaskFilter(logging.Filter):
+    """Mask sensitive environment variable values in log messages."""
+
+    def filter(self, record: logging.LogRecord) -> bool:
+        message = record.getMessage()
+        for key, val in os.environ.items():
+            if key.startswith("ADZUNA_") and val:
+                message = message.replace(val, "***")
+        record.msg = message
+        record.args = ()
+        return True
+
+
+# Configure logging with masking filter
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -28,7 +42,15 @@ logging.basicConfig(
         logging.FileHandler('logs/fetch_adzuna.log')
     ]
 )
+
 logger = logging.getLogger(__name__)
+_mask_filter = EnvVarMaskFilter()
+logger.addFilter(_mask_filter)
+for handler in logger.handlers:
+    handler.addFilter(_mask_filter)
+# Ensure root handlers also mask secrets (covers downstream modules)
+for handler in logging.getLogger().handlers:
+    handler.addFilter(_mask_filter)
 
 
 @dataclass(frozen=True)
@@ -128,9 +150,12 @@ def fetch_search_page(
                 logger.warning(f"Skipping unsupported country: {country}")
                 return None
                 
-            logger.error(f"API request failed: status={resp.status_code}, url={resp.url}")
+            path = resp.request.path_url if resp.request else f"/jobs/{country}/search/{page}"
+            logger.error(
+                "API request failed: status=%s, path=%s", resp.status_code, path
+            )
             raise RuntimeError(
-                f"Request failed: {resp.status_code}\nURL: {resp.url}\nBody: {resp.text[:500]}"
+                f"Request failed: {resp.status_code}\nPath: {path}\nBody: {resp.text[:500]}"
             )
         
         return resp.json()
