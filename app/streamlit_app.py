@@ -375,12 +375,39 @@ def render_salaries(df: pd.DataFrame) -> None:
     """
     Render salary analysis with distribution, statistics, and by-country breakdown.
     
+    Uses only clean salary data (salary_flag == 'ok') for analysis.
+    
     Args:
         df: Filtered jobs DataFrame
     """
     st.markdown('<p class="section-header">Compensation Analysis</p>', unsafe_allow_html=True)
     
-    df_salary = df[df['salary_min'].notna() & df['salary_max'].notna()].copy()
+    # Check if salary validation has been applied
+    has_validation = 'salary_flag' in df.columns
+    
+    # Filter to clean salary data if validation exists
+    if has_validation:
+        df_salary = df[
+            (df['salary_flag'] == 'ok') & 
+            df['salary_min'].notna() & 
+            df['salary_max'].notna()
+        ].copy()
+        
+        # Show quality warning if needed
+        flagged_count = len(df[df['salary_flag'] != 'ok'])
+        if flagged_count > 0:
+            with st.expander("ℹ️ Data Quality Note", expanded=False):
+                st.markdown(f"""
+                **Salary data has been validated for quality.**
+                
+                - Clean records used: {len(df_salary):,}
+                - Flagged/excluded: {flagged_count:,}
+                
+                Excluded reasons: missing data, low sample size, outliers, possible B2B rates.
+                """)
+    else:
+        # Fallback: no validation applied
+        df_salary = df[df['salary_min'].notna() & df['salary_max'].notna()].copy()
     
     if len(df_salary) > 0:
         df_salary['salary_mid'] = (df_salary['salary_min'] + df_salary['salary_max']) / 2
@@ -416,7 +443,7 @@ def render_salaries(df: pd.DataFrame) -> None:
         fig.update_xaxes(showgrid=False)
         fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor='rgba(0,0,0,0.05)')
         st.plotly_chart(fig, use_container_width=True)
-        st.caption(f"Distribution of {len(df_salary):,} jobs with salary data")
+        st.caption(f"Distribution of {len(df_salary):,} jobs with validated salary data")
         
         # By Country
         st.markdown("---")
@@ -427,27 +454,35 @@ def render_salaries(df: pd.DataFrame) -> None:
             .agg(['mean', 'median', 'count'])
             .reset_index()
         )
-        salary_by_country = salary_by_country[salary_by_country['count'] >= 3]
+        
+        # Apply minimum sample size threshold (10 records per country)
+        min_samples = 10
+        salary_by_country = salary_by_country[salary_by_country['count'] >= min_samples]
         salary_by_country = salary_by_country.sort_values('mean', ascending=True)
         
-        fig = px.bar(
-            salary_by_country,
-            y='country',
-            x='mean',
-            color='count',
-            orientation='h',
-            color_continuous_scale='Blues',
-            labels={'mean': 'Avg Salary (€)', 'country': '', 'count': 'Jobs'},
-            height=max(300, len(salary_by_country) * 20)
-        )
-        fig.update_layout(
-            showlegend=True,
-            hovermode='y unified',
-            margin=dict(l=50, r=0, t=30, b=0),
-            xaxis_title='Average Salary (€)',
-            yaxis_title=''
-        )
-        fig.update_xaxes(showgrid=True, gridwidth=1, gridcolor='rgba(0,0,0,0.05)')
+        if len(salary_by_country) > 0:
+            fig = px.bar(
+                salary_by_country,
+                y='country',
+                x='mean',
+                color='count',
+                orientation='h',
+                color_continuous_scale='Blues',
+                labels={'mean': 'Avg Salary (€)', 'country': '', 'count': 'Jobs'},
+                height=max(300, len(salary_by_country) * 20)
+            )
+            fig.update_layout(
+                showlegend=True,
+                hovermode='y unified',
+                margin=dict(l=50, r=0, t=30, b=0),
+                xaxis_title='Average Salary (€)',
+                yaxis_title=''
+            )
+            fig.update_xaxes(showgrid=True, gridwidth=1, gridcolor='rgba(0,0,0,0.05)')
+            st.plotly_chart(fig, use_container_width=True)
+            st.caption(f"Based on {len(salary_by_country)} countries with {min_samples}+ validated records")
+        else:
+            st.info(f"No countries have {min_samples}+ validated salary records")
         st.plotly_chart(fig, use_container_width=True)
         st.caption(f"Based on {len(salary_by_country)} countries with 3+ data points")
         

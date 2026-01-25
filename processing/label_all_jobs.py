@@ -13,6 +13,7 @@ from preprocessing.role_labels import assign_roles
 from processing.normalize_all_adzuna import load_all_raw
 from processing.skill_extraction import extract_skills
 from processing.fingerprints import add_fingerprints
+from processing.salary_validation import flag_salary_quality, export_salary_debug_report
 
 
 # Configure logging
@@ -62,6 +63,10 @@ def label_jobs(df: pd.DataFrame, use_ml: bool = False, model_dir: Path = None) -
     df = add_fingerprints(df)
     logger.info("Fingerprinting completed")
     
+    logger.info("Validating salary data...")
+    df = flag_salary_quality(df)
+    logger.info("Salary validation completed")
+    
     return df
 
 
@@ -99,6 +104,15 @@ if __name__ == "__main__":
         
         # Apply role labels
         df = label_jobs(df, use_ml=args.ml, model_dir=args.model if args.ml else None)
+        
+        # Export salary quality report
+        logger.info("\nExporting salary quality report...")
+        try:
+            from datetime import datetime
+            run_date = datetime.now().strftime('%Y-%m-%d')
+            export_salary_debug_report(df, run_date=run_date)
+        except Exception as e:
+            logger.warning(f"Failed to export salary debug report: {e}")
         
         # Count role distribution
         role_counts = df["roles"].explode().value_counts()
