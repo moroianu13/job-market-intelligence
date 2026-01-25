@@ -1,8 +1,18 @@
 """Tests for ML role classifier."""
+import os
 import pytest
 import pandas as pd
 from pathlib import Path
 from ml.role_classifier import RolePredictor
+
+
+def get_model_dir():
+    """Get model directory from env var or default path."""
+    env_model_dir = os.getenv('ROLE_MODEL_DIR')
+    if env_model_dir:
+        return Path(env_model_dir)
+    return Path('models/role_classifier/latest')
+
 
 
 @pytest.fixture
@@ -34,10 +44,10 @@ def sample_jobs():
 
 def test_predictor_initialization():
     """Test that predictor can be initialized with trained model."""
-    model_dir = Path('models/role_classifier/2026-01-22')
+    model_dir = get_model_dir()
     
     if not model_dir.exists():
-        pytest.skip(f"Model not found at {model_dir}")
+        pytest.skip(f"Model not found at {model_dir} (set ROLE_MODEL_DIR env var to override)")
     
     predictor = RolePredictor(model_dir)
     assert predictor.model is not None
@@ -46,12 +56,13 @@ def test_predictor_initialization():
 
 def test_predictor_single_label():
     """Test prediction for single job."""
-    model_dir = Path('models/role_classifier/2026-01-22')
+    model_dir = get_model_dir()
     
     if not model_dir.exists():
-        pytest.skip(f"Model not found at {model_dir}")
+        pytest.skip(f"Model not found at {model_dir} (set ROLE_MODEL_DIR env var to override)")
     
     predictor = RolePredictor(model_dir)
+
     
     # Test data scientist
     roles = predictor.predict_roles(
@@ -70,12 +81,13 @@ def test_predictor_single_label():
 
 def test_predictor_batch(sample_jobs):
     """Test batch prediction."""
-    model_dir = Path('models/role_classifier/2026-01-22')
+    model_dir = get_model_dir()
     
     if not model_dir.exists():
-        pytest.skip(f"Model not found at {model_dir}")
+        pytest.skip(f"Model not found at {model_dir} (set ROLE_MODEL_DIR env var to override)")
     
     predictor = RolePredictor(model_dir)
+
     df_result = predictor.predict_batch(sample_jobs)
     
     # Check that roles column was added
@@ -93,11 +105,12 @@ def test_predictor_batch(sample_jobs):
 
 def test_predictor_multi_label():
     """Test that predictor can assign multiple labels."""
-    model_dir = Path('models/role_classifier/2026-01-22')
+    model_dir = get_model_dir()
     
     if not model_dir.exists():
-        pytest.skip(f"Model not found at {model_dir}")
+        pytest.skip(f"Model not found at {model_dir} (set ROLE_MODEL_DIR env var to override)")
     
+    predictor = RolePredictor(model_dir)
     predictor = RolePredictor(model_dir)
     
     # Job that should get multiple labels
@@ -115,12 +128,13 @@ def test_predictor_multi_label():
 
 def test_predictor_threshold():
     """Test that threshold parameter affects predictions."""
-    model_dir = Path('models/role_classifier/2026-01-22')
+    model_dir = get_model_dir()
     
     if not model_dir.exists():
-        pytest.skip(f"Model not found at {model_dir}")
+        pytest.skip(f"Model not found at {model_dir} (set ROLE_MODEL_DIR env var to override)")
     
     predictor = RolePredictor(model_dir)
+
     
     title = "Data Scientist"
     description = "Machine learning, Python, statistics"
@@ -135,12 +149,13 @@ def test_predictor_threshold():
 
 def test_predictor_empty_input():
     """Test predictor with empty input."""
-    model_dir = Path('models/role_classifier/2026-01-22')
+    model_dir = get_model_dir()
     
     if not model_dir.exists():
-        pytest.skip(f"Model not found at {model_dir}")
+        pytest.skip(f"Model not found at {model_dir} (set ROLE_MODEL_DIR env var to override)")
     
     predictor = RolePredictor(model_dir)
+
     
     roles = predictor.predict_roles(title="", description="")
     

@@ -2,8 +2,9 @@
 
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-Streamlit-red)](https://job-reports.streamlit.app/)
 [![CI/CD](https://github.com/moroianu13/job-market-intelligence/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/moroianu13/job-market-intelligence/actions)
-[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
-[![Tests](https://img.shields.io/badge/tests-53%20passed-success)](tests/)
+[![Security Audited](https://img.shields.io/badge/Security-Audited-brightgreen.svg)](docs/SECURITY.md)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+[![Tests](https://img.shields.io/badge/tests-55%20passed-success)](tests/)
 
 **[🚀 View Live Dashboard](https://job-reports.streamlit.app/)**
 
@@ -17,13 +18,58 @@ Automated job market analysis platform with ML-powered role classification, ghos
 - 💰 **Salary Analysis**: Ridge regression model (R²: 0.70) for salary predictions
 - 🔍 **Skills Extraction**: NLP-based tech stack identification
 - 📈 **Market Insights**: Trends, demand analysis, and geographic patterns
-- 🧪 **53 Tests**: Comprehensive test coverage with pytest
+- 🧪 **55 Tests**: Comprehensive test coverage with pytest
+
+## 🏗️ Architecture Overview
+
+```
+┌─────────────────────┐
+│  GitHub Actions     │  Weekly cron job
+│  Scheduled Pipeline │  (Monday 2 AM UTC)
+└──────────┬──────────┘
+           │
+           ▼
+┌─────────────────────────────────────────┐
+│   Batch ETL Pipeline (Python)           │
+│  • Adzuna API ingestion                 │
+│  • Data normalization & deduplication   │
+│  • Role classification (Rule + ML)      │
+│  • Skills extraction (NLP)              │
+│  • Salary validation                    │
+│  • Ghost job detection                  │
+└──────────┬──────────────────────────────┘
+           │
+           ▼
+┌─────────────────────────────────────────┐
+│   File-Based Storage                    │
+│  • Raw: JSON (Adzuna responses)         │
+│  • Curated: Parquet (processed jobs)    │
+│  • Snapshots: Historical tracking       │
+│  • Models: joblib (trained classifiers) │
+│  • Reports: Markdown + CSV (outputs)    │
+└──────────┬──────────────────────────────┘
+           │
+           ▼
+┌─────────────────────────────────────────┐
+│   Streamlit Dashboard (Read-Only UI)    │
+│  • Interactive filtering & search       │
+│  • Real-time visualizations             │
+│  • Market insights & trends             │
+│  • Classification comparison            │
+└─────────────────────────────────────────┘
+```
+
+**Key design principles:**
+- No database; all data is file-based for simplicity and portability.
+- No authentication; dashboard is public read-only analytics.
+- Batch processing; weekly cron minimizes API costs and load.
+- ML-augmented; rule-based classifier as fallback, ML as enhancement.
 
 ## 🎯 Quick Start
 
 ### Prerequisites
 
-- Python 3.10+
+- Python 3.11+
 - Adzuna API credentials ([get free key](https://developer.adzuna.com/))
 
 ### Installation
