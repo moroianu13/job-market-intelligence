@@ -101,10 +101,17 @@ jobs:
       env:
         GH_TOKEN: ${{ github.token }}
       run: |
-        if [ ! -f data/curated/jobs_all_labeled_ml.parquet ]; then
-          echo "❌ Data file not found, skipping release creation"
+        # Use whichever labeled data file exists (ML or rule-based)
+        if [ -f data/curated/jobs_all_labeled_ml.parquet ]; then
+          DATA_FILE="data/curated/jobs_all_labeled_ml.parquet"
+        elif [ -f data/curated/jobs_all_labeled.parquet ]; then
+          DATA_FILE="data/curated/jobs_all_labeled.parquet"
+        else
+          echo "❌ No labeled data file found, skipping release creation"
           exit 0
         fi
+        
+        echo "📦 Using data file: $DATA_FILE"
         
         RELEASE_DATE=$(date +%Y-%m-%d)
         RELEASE_TAG="data-$RELEASE_DATE"
@@ -114,14 +121,14 @@ jobs:
         gh release create "$RELEASE_TAG" \
           --title "$RELEASE_NAME" \
           --notes "Automated data update from scheduled pipeline run on $RELEASE_DATE." \
-          data/curated/jobs_all_labeled_ml.parquet || echo "Release $RELEASE_TAG may already exist"
+          "$DATA_FILE" || echo "Release $RELEASE_TAG may already exist"
         
         # Update 'latest' tag to point to this release
         gh release delete latest --yes 2>/dev/null || true
         gh release create latest \
           --title "Latest Data (from $RELEASE_DATE)" \
           --notes "Always points to the most recent data. Actual date: $RELEASE_DATE" \
-          data/curated/jobs_all_labeled_ml.parquet
+          "$DATA_FILE"
         
     - name: Generate pipeline summary
       if: success()
