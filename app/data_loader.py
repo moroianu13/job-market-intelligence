@@ -4,7 +4,11 @@ from pathlib import Path
 import requests
 import re
 
-DATA_FILE = "data/curated/jobs_all_labeled_ml.parquet"
+# Try both ML and rule-based filenames
+DATA_FILES = [
+    "data/curated/jobs_all_labeled_ml.parquet",
+    "data/curated/jobs_all_labeled.parquet"
+]
 GITHUB_API_URL = "https://api.github.com/repos/moroianu13/job-market-intelligence/releases"
 GITHUB_RELEASE_BASE = "https://github.com/moroianu13/job-market-intelligence/releases/download"
 LOCAL_CACHE_DIR = Path("/tmp/job_data")
@@ -36,9 +40,10 @@ def get_available_dates():
 def load_data_from_github(date_tag='latest'):
     """Download data from GitHub Releases for a specific date."""
     
-    # Try local file first (for development)
-    if Path(DATA_FILE).exists():
-        return DATA_FILE
+    # Try local files first (for development)
+    for data_file in DATA_FILES:
+        if Path(data_file).exists():
+            return data_file
     
     # Try cached file for this date
     LOCAL_CACHE_DIR.mkdir(exist_ok=True)
@@ -47,25 +52,33 @@ def load_data_from_github(date_tag='latest'):
     if cache_file.exists():
         return str(cache_file)
     
-    # Download from GitHub Releases
-    try:
-        if date_tag == 'latest':
-            url = f"{GITHUB_RELEASE_BASE}/latest/jobs_all_labeled_ml.parquet"
-        else:
-            url = f"{GITHUB_RELEASE_BASE}/data-{date_tag}/jobs_all_labeled_ml.parquet"
-        
-        response = requests.get(url, timeout=30)
-        response.raise_for_status()
-        
-        with open(cache_file, 'wb') as f:
-            f.write(response.content)
-        
-        return str(cache_file)
+    # Download from GitHub Releases - try both filenames
+    filenames = ["jobs_all_labeled_ml.parquet", "jobs_all_labeled.parquet"]
     
-    except Exception as e:
-        st.error(f"Failed to load data for {date_tag}: {e}")
-        st.info("Run locally: `python -m processing.label_all_jobs --ml`")
-        return None
+    for filename in filenames:
+        try:
+            if date_tag == 'latest':
+                url = f"{GITHUB_RELEASE_BASE}/latest/{filename}"
+            else:
+                url = f"{GITHUB_RELEASE_BASE}/data-{date_tag}/{filename}"
+            
+            response = requests.get(url, timeout=30)
+            response.raise_for_status()
+            
+            with open(cache_file, 'wb') as f:
+                f.write(response.content)
+            
+            return str(cache_file)
+        
+        except requests.exceptions.HTTPError as e:
+            if e.response.status_code == 404:
+                continue  # Try next filename
+            raise
+    
+    # If both failed
+    st.error(f"Failed to load data for {date_tag}: File not found in release")
+    st.info("Run locally: `python -m processing.label_all_jobs --ml`")
+    return None
 
 
 def get_data_file(selected_date='latest'):
