@@ -1,5 +1,9 @@
 name: Scheduled Data Pipeline
 
+permissions:
+  contents: write  # Required for creating issues on failure
+  issues: write    # Required for creating issues on failure
+
 on:
   schedule:
     # Run every Monday at 2 AM UTC
@@ -33,34 +37,54 @@ jobs:
         
     - name: Run full pipeline with ghost detection
       run: |
-        python orchestration/run_pipeline.py --all --ml --ghost-detection
+        python -m orchestration.run_pipeline --all --ml --ghost-detection
 
     - name: Remove .env
       if: always()
       run: rm -f .env
         
-    - name: Upload artifacts
+    - name: Upload ML models and reports
+      if: success()
       uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
       with:
-        name: pipeline-summaries
+        name: ml-models-${{ github.run_id }}
         path: |
-          reports/eda/**/EDA_REPORT.md
-          reports/insights/**/INSIGHTS.md
-          reports/ghost_jobs/**/summary.json
-        retention-days: 3
+          models/role_classifier/**/role_classifier.joblib
+          models/role_classifier/**/vectorizer.joblib
+          models/role_classifier/**/metadata.txt
+          models/salary/**/salary_model.joblib
+          models/salary/**/metrics*.json
+          models/salary/**/metrics*.csv
+        retention-days: 90
+        
+    - name: Upload pipeline reports
+      if: success()
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      with:
+        name: pipeline-reports-${{ github.run_id }}
+        path: |
+          reports/eda/**/REPORT.md
+          reports/eda/**/snapshot.json
+          reports/insights/**/SUMMARY.txt
+          reports/insights/**/tables/*.csv
+        retention-days: 30
         
     - name: Generate pipeline summary
+      if: success()
       run: |
         echo "## 📊 Pipeline Execution Summary" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
         echo "**Date**: $(date)" >> $GITHUB_STEP_SUMMARY
         echo "**Status**: ✅ Completed" >> $GITHUB_STEP_SUMMARY
+        echo "**Run ID**: ${{ github.run_id }}" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
-        
-        if [ -f "reports/ghost_jobs/$(date +%Y-%m-%d)/summary.json" ]; then
-          echo "### Ghost Jobs Detected" >> $GITHUB_STEP_SUMMARY
-          cat reports/ghost_jobs/$(date +%Y-%m-%d)/summary.json | jq -r '"- Total unique jobs: \(.total_unique_jobs)\n- Ghost jobs: \(.ghost_jobs_count) (\(.ghost_jobs_pct)%)"' >> $GITHUB_STEP_SUMMARY
-        fi
+        echo "### 🤖 ML Models Trained" >> $GITHUB_STEP_SUMMARY
+        echo "- Role Classifier: \`models/role_classifier/$(date +%Y-%m-%d)/\`" >> $GITHUB_STEP_SUMMARY
+        echo "- Salary Model: \`models/salary/$(date +%Y-%m-%d)/\`" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### 📦 Artifacts" >> $GITHUB_STEP_SUMMARY
+        echo "- ML Models (90 days): \`ml-models-${{ github.run_id }}\`" >> $GITHUB_STEP_SUMMARY
+        echo "- Reports (30 days): \`pipeline-reports-${{ github.run_id }}\`" >> $GITHUB_STEP_SUMMARY
         
     - name: Notify on failure
       if: failure()

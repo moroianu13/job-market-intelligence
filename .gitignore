@@ -24,8 +24,8 @@ data/curated/snapshots/
 !data/raw/mock/**
 
 
-# models (trained artifacts)
-models/
+# models (trained artifacts) - keep small models for deployment
+# models/
 
 # reports (generated outputs)
 reports/
