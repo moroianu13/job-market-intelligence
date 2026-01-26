@@ -31,8 +31,8 @@ def get_available_dates():
                 dates.append(date)
         
         return sorted(dates, reverse=True)  # Most recent first
-    except Exception as e:
-        st.warning(f"Could not fetch available dates: {e}")
+    except Exception:
+        # Silently fall back to latest (GitHub API rate limits are expected)
         return ['latest']
 
 
