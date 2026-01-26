@@ -55,6 +55,7 @@ jobs:
           models/salary/**/salary_model.joblib
           models/salary/**/metrics*.json
           models/salary/**/metrics*.csv
+          models/salary/**/predictions*.csv
         retention-days: 90
         
     - name: Upload pipeline reports
