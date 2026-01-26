@@ -40,7 +40,7 @@ jobs:
         ADZUNA_APP_ID: ${{ secrets.ADZUNA_APP_ID }}
         ADZUNA_APP_KEY: ${{ secrets.ADZUNA_APP_KEY }}
       run: |
-        python -m orchestration.run_pipeline --all --ml --force 2>&1 | tee pipeline.log
+        python -m orchestration.run_pipeline --all --ml --ghost-detection --force 2>&1 | tee pipeline.log
         echo "Pipeline exit code: $?"
 
     - name: Debug - Show generated files
