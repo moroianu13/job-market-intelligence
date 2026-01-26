@@ -97,16 +97,21 @@ jobs:
       env:
         GH_TOKEN: ${{ github.token }}
       run: |
-        RELEASE_TAG="data-$(date +%Y-%m-%d)"
-        RELEASE_NAME="Weekly Data Update - $(date +%Y-%m-%d)"
+        RELEASE_DATE=$(date +%Y-%m-%d)
+        RELEASE_TAG="data-$RELEASE_DATE"
+        RELEASE_NAME="Weekly Data Update - $RELEASE_DATE"
         
-        # Delete old 'latest' release if exists
-        gh release delete latest --yes || true
-        
-        # Create new release tagged as 'latest'
-        gh release create latest \
+        # Create dated release (keeps history)
+        gh release create "$RELEASE_TAG" \
           --title "$RELEASE_NAME" \
-          --notes "Automated data update from scheduled pipeline. Downloaded $(wc -l < data/raw/adzuna/$(date +%Y-%m-%d)/*/*.json | awk '{s+=$1} END {print s}') jobs." \
+          --notes "Automated data update from scheduled pipeline run on $RELEASE_DATE." \
+          data/curated/jobs_all_labeled_ml.parquet
+        
+        # Update 'latest' tag to point to this release
+        gh release delete latest --yes 2>/dev/null || true
+        gh release create latest \
+          --title "Latest Data (from $RELEASE_DATE)" \
+          --notes "Always points to the most recent data. Actual date: $RELEASE_DATE" \
           data/curated/jobs_all_labeled_ml.parquet
         
     - name: Generate pipeline summary
