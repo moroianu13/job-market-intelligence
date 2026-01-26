@@ -183,8 +183,13 @@ class PipelineRunner:
         if not self.should_run_step(output_file, "eda"):
             return True
         
+        # Use the correct labeled data file
+        curated_file = 'jobs_all_labeled_ml.parquet' if self.args.ml else 'jobs_all_labeled.parquet'
+        input_file = CURATED_DATA_DIR / curated_file
+        
         cmd = [
             sys.executable, '-m', 'analysis.eda_report',
+            '--input', str(input_file),
             '--out', str(output_dir)
         ]
         
@@ -205,8 +210,13 @@ class PipelineRunner:
         if not self.should_run_step(output_file, "insights"):
             return True
         
+        # Use the correct labeled data file
+        curated_file = 'jobs_all_labeled_ml.parquet' if self.args.ml else 'jobs_all_labeled.parquet'
+        input_file = CURATED_DATA_DIR / curated_file
+        
         cmd = [
             sys.executable, '-m', 'analysis.market_insights',
+            '--input', str(input_file),
             '--out', str(output_dir)
         ]
         
@@ -220,8 +230,13 @@ class PipelineRunner:
         if not self.should_run_step(output_file, "salary"):
             return True
         
+        # Use the correct labeled data file
+        curated_file = 'jobs_all_labeled_ml.parquet' if self.args.ml else 'jobs_all_labeled.parquet'
+        input_file = CURATED_DATA_DIR / curated_file
+        
         cmd = [
             sys.executable, '-m', 'analysis.salary_model',
+            '--input', str(input_file),
             '--out', str(output_dir)
         ]
         
