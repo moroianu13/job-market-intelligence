@@ -118,18 +118,40 @@ class PipelineRunner:
         if not self.should_run_step(output_path, "label"):
             return True
         
+        # If ML mode but no model exists, we need to train it first
+        if self.args.ml:
+            try:
+                from config import get_latest_model_dir
+                latest_model = get_latest_model_dir('role_classifier')
+                logger.info(f"Using ML model: {latest_model}")
+            except FileNotFoundError:
+                logger.warning("⚠️  No trained ML model found")
+                logger.info("📋 Pipeline will: (1) label with rules → (2) train model → (3) re-label with ML")
+                
+                # Step 1: Create rule-based labels for training data
+                rule_based_file = CURATED_DATA_DIR / 'jobs_all_labeled.parquet'
+                if not rule_based_file.exists():
+                    logger.info("Creating rule-based labels for model training...")
+                    cmd_rules = [sys.executable, '-m', 'processing.label_all_jobs']
+                    if not self.run_command(cmd_rules, "label-rules"):
+                        return False
+                
+                # Step 2: Train the model (will be called by main pipeline)
+                # Just note that training will happen
+                logger.info("✓ Rule-based labels created. ML model will be trained in train_role_model step.")
+                logger.info("  After training, re-run pipeline to label with ML predictions.")
+                
+                # For now, use rule-based labels
+                logger.warning("⚠️  Using rule-based labels for this run. Re-run pipeline after model training for ML predictions.")
+                return self.run_command([sys.executable, '-m', 'processing.label_all_jobs'], "label")
+        
         cmd = [sys.executable, '-m', 'processing.label_all_jobs']
         
         if self.args.ml:
             cmd.append('--ml')
-            # Try to use latest model if not specified
-            try:
-                from config import get_latest_model_dir
-                latest_model = get_latest_model_dir('role_classifier')
-                cmd.extend(['--model', str(latest_model)])
-                logger.info(f"Using ML model: {latest_model}")
-            except FileNotFoundError:
-                logger.warning("No trained ML model found, will use default")
+            from config import get_latest_model_dir
+            latest_model = get_latest_model_dir('role_classifier')
+            cmd.extend(['--model', str(latest_model)])
         
         success = self.run_command(cmd, "label")
         
