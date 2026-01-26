@@ -205,9 +205,17 @@ class PipelineRunner:
         if not self.should_run_step(output_file, "eda"):
             return True
         
-        # Use the correct labeled data file
-        curated_file = 'jobs_all_labeled_ml.parquet' if self.args.ml else 'jobs_all_labeled.parquet'
-        input_file = CURATED_DATA_DIR / curated_file
+        # Use whichever labeled file actually exists
+        ml_file = CURATED_DATA_DIR / 'jobs_all_labeled_ml.parquet'
+        rule_file = CURATED_DATA_DIR / 'jobs_all_labeled.parquet'
+        
+        if self.args.ml and ml_file.exists():
+            input_file = ml_file
+        elif rule_file.exists():
+            input_file = rule_file
+        else:
+            logger.error("❌ No labeled data found")
+            return False
         
         cmd = [
             sys.executable, '-m', 'analysis.eda_report',
@@ -232,9 +240,17 @@ class PipelineRunner:
         if not self.should_run_step(output_file, "insights"):
             return True
         
-        # Use the correct labeled data file
-        curated_file = 'jobs_all_labeled_ml.parquet' if self.args.ml else 'jobs_all_labeled.parquet'
-        input_file = CURATED_DATA_DIR / curated_file
+        # Use whichever labeled file actually exists
+        ml_file = CURATED_DATA_DIR / 'jobs_all_labeled_ml.parquet'
+        rule_file = CURATED_DATA_DIR / 'jobs_all_labeled.parquet'
+        
+        if self.args.ml and ml_file.exists():
+            input_file = ml_file
+        elif rule_file.exists():
+            input_file = rule_file
+        else:
+            logger.error("❌ No labeled data found")
+            return False
         
         cmd = [
             sys.executable, '-m', 'analysis.market_insights',
@@ -252,9 +268,17 @@ class PipelineRunner:
         if not self.should_run_step(output_file, "salary"):
             return True
         
-        # Use the correct labeled data file
-        curated_file = 'jobs_all_labeled_ml.parquet' if self.args.ml else 'jobs_all_labeled.parquet'
-        input_file = CURATED_DATA_DIR / curated_file
+        # Use whichever labeled file actually exists
+        ml_file = CURATED_DATA_DIR / 'jobs_all_labeled_ml.parquet'
+        rule_file = CURATED_DATA_DIR / 'jobs_all_labeled.parquet'
+        
+        if self.args.ml and ml_file.exists():
+            input_file = ml_file
+        elif rule_file.exists():
+            input_file = rule_file
+        else:
+            logger.error("❌ No labeled data found")
+            return False
         
         cmd = [
             sys.executable, '-m', 'analysis.salary_model',
