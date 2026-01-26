@@ -34,14 +34,38 @@ jobs:
       run: |
         echo "ADZUNA_APP_ID=${{ secrets.ADZUNA_APP_ID }}" >> .env
         echo "ADZUNA_APP_KEY=${{ secrets.ADZUNA_APP_KEY }}" >> .env
+    
+    - name: Verify data directories
+      run: |
+        mkdir -p data/raw data/curated models reports logs
+        ls -la data/ || true
         
     - name: Run full pipeline with ghost detection
       run: |
-        python -m orchestration.run_pipeline --all --ml --ghost-detection
+        python -m orchestration.run_pipeline --all --ml --force 2>&1 | tee pipeline.log
+        echo "Pipeline exit code: $?"
 
     - name: Remove .env
       if: always()
       run: rm -f .env
+    
+    - name: Debug - Show generated files
+      if: always()
+      run: |
+        echo "=== Models directory ==="
+        ls -R models/ || echo "No models directory"
+        echo "=== Reports directory ==="
+        ls -R reports/ || echo "No reports directory"
+        
+    - name: Upload pipeline log
+      if: always()
+      continue-on-error: true
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      with:
+        name: pipeline-log-${{ github.run_id }}
+        path: pipeline.log
+        retention-days: 7
+        if-no-files-found: warn
         
     - name: Upload ML models and reports
       if: success()
