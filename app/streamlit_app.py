@@ -16,7 +16,7 @@ import pandas as pd
 import plotly.express as px
 import streamlit as st
 
-from data_loader import get_data_file
+from data_loader import get_data_file, get_available_dates
 
 # ============================================================================
 # PAGE CONFIGURATION & STYLING
@@ -744,11 +744,25 @@ def main():
     # Sidebar - Data source selection
     st.sidebar.markdown("### Data Source")
     
-    # Try to get data file from local or GCS
-    data_file = get_data_file()
+    # Get available dates from GitHub Releases
+    available_dates = get_available_dates()
+    
+    if not available_dates:
+        st.error("No data available from GitHub Releases.")
+        return
+    
+    # Date selector
+    selected_date = st.sidebar.selectbox(
+        "Data Collection Date",
+        available_dates,
+        format_func=lambda x: f"Latest ({x})" if x == 'latest' else x
+    )
+    
+    # Try to get data file from local or GitHub
+    data_file = get_data_file(selected_date)
     
     if not data_file:
-        st.error("No data available. Check logs for details.")
+        st.error("Failed to load data. Check logs for details.")
         return
     
     # Load data

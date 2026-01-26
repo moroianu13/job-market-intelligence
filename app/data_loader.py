@@ -2,40 +2,72 @@
 import streamlit as st
 from pathlib import Path
 import requests
+import re
 
 DATA_FILE = "data/curated/jobs_all_labeled_ml.parquet"
-GITHUB_RELEASE_URL = "https://github.com/moroianu13/job-market-intelligence/releases/download/latest/jobs_all_labeled_ml.parquet"
-LOCAL_CACHE = "/tmp/jobs_all_labeled_ml.parquet"
+GITHUB_API_URL = "https://api.github.com/repos/moroianu13/job-market-intelligence/releases"
+GITHUB_RELEASE_BASE = "https://github.com/moroianu13/job-market-intelligence/releases/download"
+LOCAL_CACHE_DIR = Path("/tmp/job_data")
 
 
-@st.cache_data(ttl=3600)  # Cache for 1 hour
-def load_data_from_github():
-    """Download data from GitHub Releases if local file doesn't exist."""
+@st.cache_data(ttl=3600)
+def get_available_dates():
+    """Get list of available data dates from GitHub Releases."""
+    try:
+        response = requests.get(GITHUB_API_URL, timeout=10)
+        response.raise_for_status()
+        releases = response.json()
+        
+        # Extract dates from tags like "data-2026-01-22"
+        dates = []
+        for release in releases:
+            tag = release.get('tag_name', '')
+            if tag.startswith('data-'):
+                date = tag.replace('data-', '')
+                dates.append(date)
+        
+        return sorted(dates, reverse=True)  # Most recent first
+    except Exception as e:
+        st.warning(f"Could not fetch available dates: {e}")
+        return ['latest']
+
+
+@st.cache_data(ttl=3600)
+def load_data_from_github(date_tag='latest'):
+    """Download data from GitHub Releases for a specific date."""
     
     # Try local file first (for development)
     if Path(DATA_FILE).exists():
         return DATA_FILE
     
-    # Try cached file
-    if Path(LOCAL_CACHE).exists():
-        return LOCAL_CACHE
+    # Try cached file for this date
+    LOCAL_CACHE_DIR.mkdir(exist_ok=True)
+    cache_file = LOCAL_CACHE_DIR / f"jobs_{date_tag}.parquet"
+    
+    if cache_file.exists():
+        return str(cache_file)
     
     # Download from GitHub Releases
     try:
-        response = requests.get(GITHUB_RELEASE_URL, timeout=30)
+        if date_tag == 'latest':
+            url = f"{GITHUB_RELEASE_BASE}/latest/jobs_all_labeled_ml.parquet"
+        else:
+            url = f"{GITHUB_RELEASE_BASE}/data-{date_tag}/jobs_all_labeled_ml.parquet"
+        
+        response = requests.get(url, timeout=30)
         response.raise_for_status()
         
-        with open(LOCAL_CACHE, 'wb') as f:
+        with open(cache_file, 'wb') as f:
             f.write(response.content)
         
-        return LOCAL_CACHE
+        return str(cache_file)
     
     except Exception as e:
-        st.error(f"Failed to load data: {e}")
+        st.error(f"Failed to load data for {date_tag}: {e}")
         st.info("Run locally: `python -m processing.label_all_jobs --ml`")
         return None
 
 
-def get_data_file():
-    """Get path to data file, downloading from GitHub Releases if needed."""
-    return load_data_from_github()
+def get_data_file(selected_date='latest'):
+    """Get path to data file for selected date."""
+    return load_data_from_github(selected_date)
