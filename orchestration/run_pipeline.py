@@ -98,7 +98,7 @@ class PipelineRunner:
         if not self.should_run_step(output_dir, "fetch"):
             return True
         
-        cmd = [sys.executable, 'ingestion/fetch_adzuna.py']
+        cmd = [sys.executable, '-m', 'ingestion.fetch_adzuna']
         
         # Add optional arguments
         if self.args.countries:
@@ -118,7 +118,7 @@ class PipelineRunner:
         if not self.should_run_step(output_path, "label"):
             return True
         
-        cmd = [sys.executable, 'processing/label_all_jobs.py']
+        cmd = [sys.executable, '-m', 'processing.label_all_jobs']
         
         if self.args.ml:
             cmd.append('--ml')
@@ -169,7 +169,7 @@ class PipelineRunner:
             return True
         
         cmd = [
-            sys.executable, 'analysis/repost_detector.py',
+            sys.executable, '-m', 'analysis.repost_detector',
             '--run-date', self.run_date
         ]
         
@@ -184,7 +184,7 @@ class PipelineRunner:
             return True
         
         cmd = [
-            sys.executable, 'analysis/eda_report.py',
+            sys.executable, '-m', 'analysis.eda_report',
             '--out', str(output_dir)
         ]
         
@@ -206,7 +206,7 @@ class PipelineRunner:
             return True
         
         cmd = [
-            sys.executable, 'analysis/market_insights.py',
+            sys.executable, '-m', 'analysis.market_insights',
             '--out', str(output_dir)
         ]
         
@@ -221,7 +221,7 @@ class PipelineRunner:
             return True
         
         cmd = [
-            sys.executable, 'analysis/salary_model.py',
+            sys.executable, '-m', 'analysis.salary_model',
             '--out', str(output_dir)
         ]
         
@@ -243,7 +243,7 @@ class PipelineRunner:
             return False
         
         cmd = [
-            sys.executable, 'ml/role_classifier/train_classifier.py',
+            sys.executable, '-m', 'ml.role_classifier.train_classifier',
             '--data', str(data_file),
             '--out', str(output_dir)
         ]

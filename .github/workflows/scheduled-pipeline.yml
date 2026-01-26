@@ -94,9 +94,15 @@ jobs:
     
     - name: Create release with data file
       if: success()
+      continue-on-error: true
       env:
         GH_TOKEN: ${{ github.token }}
       run: |
+        if [ ! -f data/curated/jobs_all_labeled_ml.parquet ]; then
+          echo "❌ Data file not found, skipping release creation"
+          exit 0
+        fi
+        
         RELEASE_DATE=$(date +%Y-%m-%d)
         RELEASE_TAG="data-$RELEASE_DATE"
         RELEASE_NAME="Weekly Data Update - $RELEASE_DATE"
@@ -105,7 +111,7 @@ jobs:
         gh release create "$RELEASE_TAG" \
           --title "$RELEASE_NAME" \
           --notes "Automated data update from scheduled pipeline run on $RELEASE_DATE." \
-          data/curated/jobs_all_labeled_ml.parquet
+          data/curated/jobs_all_labeled_ml.parquet || echo "Release $RELEASE_TAG may already exist"
         
         # Update 'latest' tag to point to this release
         gh release delete latest --yes 2>/dev/null || true
