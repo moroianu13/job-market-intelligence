@@ -29,11 +29,6 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-        
-    - name: Create .env file
-      run: |
-        echo "ADZUNA_APP_ID=${{ secrets.ADZUNA_APP_ID }}" >> .env
-        echo "ADZUNA_APP_KEY=${{ secrets.ADZUNA_APP_KEY }}" >> .env
     
     - name: Verify data directories
       run: |
@@ -41,14 +36,13 @@ jobs:
         ls -la data/ || true
         
     - name: Run full pipeline with ghost detection
+      env:
+        ADZUNA_APP_ID: ${{ secrets.ADZUNA_APP_ID }}
+        ADZUNA_APP_KEY: ${{ secrets.ADZUNA_APP_KEY }}
       run: |
         python -m orchestration.run_pipeline --all --ml --force 2>&1 | tee pipeline.log
         echo "Pipeline exit code: $?"
 
-    - name: Remove .env
-      if: always()
-      run: rm -f .env
-    
     - name: Debug - Show generated files
       if: always()
       run: |
