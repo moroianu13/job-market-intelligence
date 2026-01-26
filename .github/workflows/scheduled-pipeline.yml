@@ -45,6 +45,7 @@ jobs:
         
     - name: Upload ML models and reports
       if: success()
+      continue-on-error: true
       uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
       with:
         name: ml-models-${{ github.run_id }}
@@ -57,9 +58,11 @@ jobs:
           models/salary/**/metrics*.csv
           models/salary/**/predictions*.csv
         retention-days: 90
+        if-no-files-found: warn
         
     - name: Upload pipeline reports
       if: success()
+      continue-on-error: true
       uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
       with:
         name: pipeline-reports-${{ github.run_id }}
@@ -69,6 +72,7 @@ jobs:
           reports/insights/**/SUMMARY.txt
           reports/insights/**/tables/*.csv
         retention-days: 30
+        if-no-files-found: warn
         
     - name: Generate pipeline summary
       if: success()
