@@ -16,6 +16,8 @@ import pandas as pd
 import plotly.express as px
 import streamlit as st
 
+from data_loader import get_data_file
+
 # ============================================================================
 # PAGE CONFIGURATION & STYLING
 # ============================================================================
@@ -742,25 +744,15 @@ def main():
     # Sidebar - Data source selection
     st.sidebar.markdown("### Data Source")
     
-    default_paths = [
-        "data/curated/jobs_all_labeled.parquet",
-        "data/curated/jobs_all_labeled_ml.parquet"
-    ]
+    # Try to get data file from local or GCS
+    data_file = get_data_file()
     
-    available_files = [p for p in default_paths if Path(p).exists()]
-    
-    if not available_files:
-        st.error("No data files found. Run: `python orchestration/run_pipeline.py --all`")
+    if not data_file:
+        st.error("No data available. Check logs for details.")
         return
     
-    selected_file = st.sidebar.selectbox(
-        "Classification Method",
-        available_files,
-        format_func=lambda x: "Machine Learning" if "ml" in x else "Rule-Based"
-    )
-    
     # Load data
-    df = load_data(selected_file)
+    df = load_data(data_file)
     
     if df is None or len(df) == 0:
         st.error("Failed to load data")

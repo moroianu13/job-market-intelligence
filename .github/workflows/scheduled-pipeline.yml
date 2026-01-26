@@ -91,6 +91,20 @@ jobs:
           reports/insights/**/tables/*.csv
         retention-days: 30
         if-no-files-found: warn
+    
+    - name: Authenticate to Google Cloud
+      if: success()
+      uses: google-github-actions/auth@v2
+      with:
+        credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+    
+    - name: Upload data to GCS
+      if: success()
+      uses: google-github-actions/upload-cloud-storage@v2
+      with:
+        path: data/curated/jobs_all_labeled_ml.parquet
+        destination: job-market-data/latest/
+        parent: false
         
     - name: Generate pipeline summary
       if: success()
