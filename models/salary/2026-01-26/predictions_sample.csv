@@ -1,0 +1,106 @@
+country,roles_txt,skills_txt,title_txt,y_true_salary,y_pred_salary
+es,data_scientist machine_learning_engineer software_engineer,machine_learning mlops nlp,Data Scientist,80000.0,86380.93155891074
+gb,data_engineer,,Structured Cabling Data Engineer,48304.6,56419.01688296642
+at,data_engineer data_scientist,,Data Engineer (w/m/d),65000.0,74816.86816633695
+gb,data_scientist,,Data Scientist,59915.67,60115.777329478464
+gb,data_engineer,,Lead Data Engineer,65000.0,65996.45205838885
+de,data_scientist,,Staff Data Scientist,120000.0,83702.1449821141
+gb,machine_learning_engineer,machine_learning,Lead Machine Learning Engineer,65381.75,74351.032918076
+gb,data_scientist,,Data Scientist,83951.1,60115.777329478464
+gb,data_scientist,,Manufacturing Data Scientist,46588.0,60115.777329478464
+es,data_scientist,,DATA SCIENTIST / SENIOR DATA SCIENTIST,80000.0,80253.01031309861
+gb,machine_learning_engineer,machine_learning,Machine Learning Engineer,65000.0,73942.65864703427
+gb,data_scientist machine_learning_engineer software_engineer,machine_learning,Machine Learning Engineer,77400.33,67598.13577607978
+es,data_scientist,machine_learning,Data Scientist,80000.0,85110.00029735069
+es,data_scientist,go,Data Scientist,80000.0,77054.54783062487
+pl,machine_learning_engineer,azure machine_learning,Machine Learning Engineer,288000.0,191617.12865618052
+es,data_scientist,,Data Scientist,80000.0,77303.47063481441
+nl,cybersecurity_specialist,computer_vision,Reservist Cyber Onderofficier,41724.0,59050.316977770766
+gb,data_engineer,machine_learning,Data Engineer,66489.62,65840.12848598791
+gb,machine_learning_engineer,machine_learning,Machine Learning Engineer,80336.83,73942.65864703427
+gb,data_scientist,,Data Scientist,63267.44,60115.777329478464
+gb,machine_learning_engineer,machine_learning,Senior Machine Learning Engineer,70570.78,81596.97588903819
+gb,data_engineer,,Data Engineer,50000.0,58033.59882345163
+gb,machine_learning_engineer,machine_learning,Machine Learning Engineer,55714.02,73942.65864703427
+gb,machine_learning_engineer,machine_learning,Machine Learning Engineer,37766.04,73942.65864703427
+gb,data_scientist,nlp,Data Scientist,57368.88,62219.71092236867
+gb,data_scientist,,Data Scientist,54663.46,60115.777329478464
+gb,data_engineer,databricks,Data Engineer,62500.0,63803.20414530904
+nl,data_analyst data_scientist,machine_learning,Data Scientist,27036.0,68969.5478463709
+es,machine_learning_engineer,machine_learning,Machine Learning Engineer,80000.0,91130.35195237021
+gb,data_scientist,,Data Scientist,70778.38,60115.777329478464
+es,machine_learning_engineer,machine_learning,Machine Learning Engineer,80000.0,91130.35195237021
+gb,machine_learning_engineer,machine_learning,Principal Machine Learning Engineer,78959.21,73942.65864703427
+de,data_scientist,machine_learning,Data Scientist,125000.0,93005.82688021241
+at,software_engineer,,"Software Developer, Data Infrastructure (Cloud Ops focus) - m/f/d, full-time",50000.0,75596.42957328193
+es,data_scientist,machine_learning,Data Scientist,80000.0,85110.00029735069
+gb,other,,Data Management Engineer,47320.0,56988.122508698114
+gb,machine_learning_engineer,machine_learning,Machine Learning Engineer,59944.42,73942.65864703427
+gb,machine_learning_engineer,ci_cd machine_learning mlops,Machine Learning Engineer,90734.62,72755.75707850163
+es,cybersecurity_specialist data_engineer,azure,Azure Data Engineer,80000.0,75158.89674742523
+gb,data_engineer machine_learning_engineer,machine_learning,Machine Learning Engineer - AI and Automation,85000.0,71850.09283284588
+gb,data_engineer,,Lead Data Engineer,65000.0,65996.45205838885
+gb,machine_learning_engineer,machine_learning,Machine Learning Engineer,55108.9,73942.65864703427
+gb,data_engineer,azure,Data Engineer,55000.0,58031.5519888459
+es,data_scientist,azure,Data Scientist,80000.0,77301.42380020868
+es,machine_learning_engineer,machine_learning,Machine Learning Engineer,80000.0,91130.35195237021
+gb,data_scientist machine_learning_engineer,machine_learning,Machine Learning Engineer,65524.82,70402.2337081191
+gb,data_scientist,,Data Scientist Insurance Consultancy,61860.35,60115.777329478464
+gb,data_engineer,,Senior Data Engineer,70000.0,63752.77887623901
+es,data_scientist,,Data Scientist,80000.0,77303.47063481441
+fr,data_scientist,,Data scientist,42500.0,69029.4747779725
+gb,other,,Data Migration Engineer,40000.0,55672.66751521048
+gb,data_engineer,dbt snowflake,Data Engineer,44499.0,64906.12936897836
+gb,data_engineer,,Data Engineer,62912.88,58033.59882345163
+gb,machine_learning_engineer,machine_learning,Machine Learning Engineer,42324.16,73942.65864703427
+gb,data_scientist,computer_vision machine_learning nlp,Data Scientist,50387.98,67063.24098614088
+es,data_engineer,go,Data Engineer,80000.0,74972.36932459804
+gb,machine_learning_engineer,machine_learning,Machine Learning Engineer,65000.0,73942.65864703427
+gb,data_engineer,,Data Engineer,60283.57,58033.59882345163
+at,data_engineer,,"Data Engineer (m/w/d) Analytics, Fashion Retail",60000.0,76007.55541560127
+gb,data_engineer,,Data Engineer,130000.0,58033.59882345163
+nl,data_engineer,,Data Engineer,62424.0,62313.65369918859
+de,data_engineer devops_engineer,azure,Cloud & Data Engineer (gn),75000.0,79675.09463645013
+es,machine_learning_engineer,machine_learning,Machine Learning Engineer,100000.0,91130.35195237021
+gb,data_scientist,,Environmental Data Scientist/Hydrologist,38500.0,53743.2006234382
+gb,data_engineer devops_engineer,azure databricks,Data Platform Engineer,100000.0,62030.00565779337
+gb,machine_learning_engineer,machine_learning,Senior Machine Learning Engineer,61772.81,81596.97588903819
+gb,data_engineer,,Lead Data Engineer,65000.0,65996.45205838885
+gb,data_engineer,airflow api aws etl python spark sql,Data Engineer,82000.0,65619.05558475036
+es,data_scientist,,Data Scientist,80000.0,77303.47063481441
+gb,data_engineer,,Data Engineers,44200.0,59003.04768319136
+gb,data_engineer,airflow aws dbt looker python snowflake,Data Engineer,62500.0,76524.77649870286
+gb,data_analyst data_engineer,excel,Data Engineer - no experience necessary,40524.81,56341.75433876275
+at,data_engineer,etl,Data Engineer (m/w/d),67500.0,71120.85827371903
+pl,devops_engineer machine_learning_engineer,azure ci_cd docker kubernetes machine_learning mlflow mlops terraform,Machine Learning Engineer,277200.0,188406.7309890129
+gb,data_scientist,go machine_learning,Data Scientist,55000.0,67673.3841878252
+pl,machine_learning_engineer,machine_learning,Machine Learning Engineer,282000.0,191619.17549078626
+es,data_engineer machine_learning_engineer,machine_learning,AI & Machine learning Engineer,100000.0,90839.93058248446
+es,data_scientist,,Data Scientist,80000.0,77303.47063481441
+es,data_scientist,,Data Scientist,80000.0,77303.47063481441
+gb,data_engineer,azure power_bi sql,Data Engineer,35638.85,67488.6580481678
+es,data_scientist,,Data Scientist,80000.0,77303.47063481441
+fr,machine_learning_engineer,machine_learning,Machine Learning Engineer H/F,70000.0,82856.35609552832
+pl,machine_learning_engineer,machine_learning,Senior Machine Learning Engineer,296094.0,199273.49273279018
+gb,machine_learning_engineer,machine_learning,Machine Learning Engineer,61186.44,73942.65864703427
+gb,data_engineer data_scientist devops_engineer,machine_learning,Data Scientist,71611.94,66858.01283702234
+gb,data_scientist machine_learning_engineer,machine_learning,Senior Data Scientist,70000.0,76622.25031657457
+es,data_scientist,machine_learning,Data Scientist,80000.0,85110.00029735069
+gb,data_engineer,,Data Engineer,65000.0,58033.59882345163
+es,data_scientist,aws azure databricks git glue machine_learning mlflow python spark sql,Senior Data Scientist,80000.0,109563.63662855876
+gb,data_engineer,azure databricks,Data Engineer,52500.0,63801.15731070331
+es,data_scientist,machine_learning,Senior Data Scientist,80000.0,88642.19213851134
+gb,machine_learning_engineer,machine_learning,Machine Learning Engineer,44834.04,73942.65864703427
+es,machine_learning_engineer,machine_learning python,Machine Learning Engineer/ Data Science,100000.0,88705.28819425825
+es,data_scientist,machine_learning,Data Scientist,80000.0,85110.00029735069
+gb,data_scientist,,Senior Data Scientist,65000.0,63647.9691706391
+gb,data_scientist,,Data Scientist,56140.34,60115.777329478464
+es,data_scientist,aws azure docker git java kubernetes python r sql,Data Scientist,80000.0,100859.35999346038
+de,data_scientist,machine_learning,Operational Planning Data Scientist,43499.0,93005.82688021241
+gb,machine_learning_engineer,machine_learning,Machine Learning Engineer,82500.0,73942.65864703427
+gb,data_scientist,computer_vision deep_learning machine_learning nlp,Data Scientist,114400.0,67886.90160953716
+gb,other,,Data Integration Engineer,55322.38,55672.66751521048
+es,data_scientist,machine_learning,Lead Data Scientist,80000.0,90491.72248260345
+gb,data_scientist,,Lead Data Scientist - Drug Discovery,85000.0,65497.49951473123
+gb,data_analyst,,Commercial Data Analyst/Scientist,47500.0,53462.17398504118
+gb,data_scientist,,Data Scientist,54959.11,60115.777329478464

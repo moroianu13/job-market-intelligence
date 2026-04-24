@@ -1,0 +1,3 @@
+role_categories: ['data_scientist', 'data_engineer', 'machine_learning_engineer', 'data_analyst', 'cybersecurity_specialist', 'devops_engineer', 'software_engineer', 'other']
+num_features: 5000
+model_type: MultiOutputClassifier(LogisticRegression)
